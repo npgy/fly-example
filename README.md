@@ -64,3 +64,15 @@ Take an inventory of what kind of environment variables and secrets you need for
 Non-secret environment variables can by set in plain text in the `fly-***.toml` files.
 
 For automatic deployment for the web, you will also need to add your own `deploy-web.yml` file, I have deploy yml files already for the database and the server as scaffolding.
+
+## How are these networking together?
+
+Fly allows for internal dns access to other applications.  
+The example server in this repo connects to Postgres via it's fly app name with `.internal` appended. E.g. `pgtest-whatever-inc.internal`
+
+This is currently set in the `fly-server.toml` file, yours will be different as you will have a unique app name. The hostname will follow the pattern of `<appname>.internal`
+
+The server and the web will be exposed via HTTPS automatically by fly.io. This is what the `[http_service]` section is doing in each of those toml files, so we immediately get a public domain name to connect them.  
+Your web layer will need to reference whatever domain is assigned to your server. Generally it will be in the form of `https://<appname>.fly.dev`
+
+For this example server, it is `https://flytest-server-whatever-inc.fly.dev`
