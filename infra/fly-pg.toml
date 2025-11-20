@@ -20,6 +20,9 @@ dockerfile = "Dockerfile-pg"
   [[services.ports]]
     port = 5432
 
+[env]
+  POSTGRES_USER = "admin"
+
 [[vm]]
   size = 'shared-cpu-1x'
 
