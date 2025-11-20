@@ -7,6 +7,7 @@ app = 'pgtest-whatever-inc'
 primary_region = 'iad'
 
 [build]
+dockerfile = "Dockerfile"
 
 [[services]]
   internal_port = 5432
@@ -21,3 +22,7 @@ primary_region = 'iad'
 
 [[vm]]
   size = 'shared-cpu-1x'
+
+[mounts]
+  source = "pgdata"
+  destination = "/var/lib/postgresql"

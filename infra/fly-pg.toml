@@ -7,6 +7,7 @@ app = 'pgtest-whatever-inc'
 primary_region = 'iad'
 
 [build]
+dockerfile = "Dockerfile-pg"
 
 [[services]]
   internal_port = 5432

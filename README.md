@@ -4,7 +4,7 @@
 
 `fly launch`
 
-Edit the `fly.toml` with whats in here (roughly)
+Edit the `fly.toml` with whats in
 
 Postgres also needs a static ipv4, it costs $2 per month but that's ok.  
 Provision a static ipv4 with `fly ips allocate-v4`
@@ -23,3 +23,5 @@ Then add this at the end of your `fly.toml` to bind the volume
 
 Now redeploy to activate this new configuration  
 `fly deploy`
+
+## Automating the deploy
