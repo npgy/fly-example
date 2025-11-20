@@ -48,3 +48,19 @@ Then go into your Github repo settings, find the `Secrets and variables` section
 
 Click `new repository secret`  
 Give your new secret a name of `FLY_API_TOKEN_PG` (this is what deploy-pg.yml is looking at, you can call it anything as long as they're the same). Paste your fly.io token in there and click `Add secret`
+
+## Server + Web Client
+
+Most of the above steps can be repeated for the server and the web client.
+You probably don't need a persistent volume for any of them, and you probably won't have any secrets for the web client.
+
+Create a `fly-server.toml` and `Dockerfile-server` for your server, and a `fly-web.toml` and `Dockerfile-web` for your web client. I already have scaffolding in here but you'll want to override with your specific Dockerfiles for your applications.
+
+Give super unique names to the `app` entry in each toml file!
+
+The general flow is to `fly launch ...` them, then `fly scale ...`, and for any secrets run `fly secrets ...`
+
+Take an inventory of what kind of environment variables and secrets you need for your server/web client.  
+Non-secret environment variables can by set in plain text in the `fly-***.toml` files.
+
+For automatic deployment for the web, you will also need to add your own `deploy-web.yml` file, I have deploy yml files already for the database and the server as scaffolding.
