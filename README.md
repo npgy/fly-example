@@ -1,3 +1,7 @@
+# Install the flyctl cli tool
+
+https://fly.io/docs/flyctl/install/
+
 # Deploy to Fly.io
 
 Copy the `.github/workflows` folder and `infra` folder to your own repository. Push these changes up.
