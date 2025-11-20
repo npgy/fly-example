@@ -1,4 +1,4 @@
-# fly.toml app configuration file generated for pgtest-whatever-inc on 2025-11-19T19:08:46-05:00
+# fly.toml app configuration file generated for flytest-server-whatever-inc on 2025-11-20T07:58:28-05:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
@@ -7,22 +7,21 @@ app = 'flytest-server-whatever-inc'
 primary_region = 'iad'
 
 [build]
-dockerfile = "Dockerfile-server"
-
-[http_service]
-  internal_port = 8080 # The port your application listens on inside the VM
-  force_https = true # Redirects HTTP to HTTPS
-  auto_stop_machines = true # Stops machines when idle
-  auto_start_machines = true # Starts machines when traffic arrives
-  min_machines_running = 0 # Minimum number of machines to keep running
-  processes = ["app"] # Which process group handles this service (default is "app")
+  dockerfile = 'Dockerfile-server'
 
 [env]
-  POSTGRES_USER = "admin"
-  POSTGRES_PASSWORD = "password"
-  POSTGRES_DB = "postgres"
-  POSTGRES_HOST = "pgtest-whatever-inc.internal"
-  POSTGRES_PORT = "5432"
+  POSTGRES_DB = 'postgres'
+  POSTGRES_HOST = 'pgtest-whatever-inc.internal'
+  POSTGRES_PORT = '5432'
+  POSTGRES_USER = 'admin'
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
 
 [[vm]]
   size = 'shared-cpu-1x'
