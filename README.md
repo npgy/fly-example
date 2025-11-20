@@ -28,6 +28,9 @@ Now launch your brand new Postgres app
 Fly likes to give you 2 machines by default, this is overkill, let's scale it back to 1.  
 `fly scale count 1 -c infra/fly-pg.toml`
 
+Postgres requires some sort of persistent data storage. We'll use fly.io volumes to do that, these will mount directly into your container.
+Create a volume: `fly volumes create pgdata -c infra/fly-pg.toml`
+
 Postgres will probably fail on first launch, that's because it still needs 1 required secret.  
 At a bare minimum, Postgres requires a `POSTGRES_PASSWORD` environment variable which has your superuser password.  
 Because this is sensitive, this needs to be created as a secret in fly.io.  
