@@ -4,16 +4,32 @@ https://fly.io/docs/flyctl/install/
 
 # Deploy to Fly.io
 
-Copy the `.github/workflows` folder and `infra` folder to your own repository. Push these changes up.
+Login to your fly.io account.  
+Download the `flyctl` cli tool: https://fly.io/docs/flyctl/install/  
+Run `fly auth login`
 
-Login to your fly.io account.
+Let's launch a simple app in your team's organization to start.  
+I'll be using team jahc's org, but you should change this to whichever org/team you're on.
+`fly launch -o seng-401-team-jahc`
 
-In the fly.io Dashboard, click "Launch an App"
-![launch](docs/launch.png)
+> [!TIP]
+> To find your org name, click on Account > Organizations in the top right of the fly.io dashboard.
 
-Click `Select repository`
+When asked to tweak settings, say yes. This will open a browser window for you to enter custom values.
+
+Let's give our app a unique name. I would suggest starting with deploying your postgres server, so you can call it something appropriate for that.  
+Set the port to `5432`  
+Give the minimum memory amount (256mb).  
+Make sure to select `none` for Managed Postgres, we do NOT want this.  
+Ignore the rest of the settings and click confirm.  
+This will generate a new fly.toml file with your new app name.
+
+Override all settings with the contents in `fly-pg.toml` except for the app name. Next, we'll configure this file specifically for your setup and deploy Postgres.  
+Also copy over the `Dockerfile-pg` file into the same directory as your `fly-pg.toml` file.
 
 ## Postgres
+
+Now that we have an initial app created, let's customize it.
 
 For any non-sensitive environment variables, those can be safely set under the `[env]` section in `fly-pg.toml`  
 e.g.
@@ -24,10 +40,8 @@ e.g.
   POSTGRES_DB = "my-database"
 ```
 
-Also, let's give a _very_ unique name to the `app` field in `fly-pg.toml` (this is a globally unique name across accounts)
-
 Now launch your brand new Postgres app  
-`fly launch -c infra/fly-pg.toml`
+`fly deploy -c fly-pg.toml`
 
 Fly likes to give you 2 machines by default, this is overkill, let's scale it back to 1.  
 `fly scale count 1 -c infra/fly-pg.toml`
@@ -41,6 +55,8 @@ Because this is sensitive, this needs to be created as a secret in fly.io.
 `fly secrets set POSTGRES_PASSWORD=verysecret -c infra/fly-pg.toml`
 
 ## Automating the deploy
+
+Copy the `.github/workflows` folder into the root of your repo. This contains a `deploy-pg.yml` file that will be able to automatically redeploy the postgres database whenever there are changes pushed or PR'd into main.
 
 In your Postgres app, find the `Tokens` menu item
 ![tokens](docs/tokens.png)
@@ -56,13 +72,12 @@ Give your new secret a name of `FLY_API_TOKEN_PG` (this is what deploy-pg.yml is
 ## Server + Web Client
 
 Most of the above steps can be repeated for the server and the web client.
+First launch an app under your org with the `fly launch...` command. Then customize the `fly-***.toml` and Dockerfiles.  
 You probably don't need a persistent volume for any of them, and you probably won't have any secrets for the web client.
 
-Create a `fly-server.toml` and `Dockerfile-server` for your server, and a `fly-web.toml` and `Dockerfile-web` for your web client. I already have scaffolding in here but you'll want to override with your specific Dockerfiles for your applications.
+The `fly-server.toml` file in this repository is a good starter for your server, but you'll want to customize the environment variables to your liking.
 
-Give super unique names to the `app` entry in each toml file!
-
-The general flow is to `fly launch ...` them, then `fly scale ...`, and for any secrets run `fly secrets ...`
+This file will be pointing at `Dockerfile-server` to build, so you can either change this to point to your server's existing Dockerfile, or rename your server's Dockerfile to this.
 
 Take an inventory of what kind of environment variables and secrets you need for your server/web client.  
 Non-secret environment variables can by set in plain text in the `fly-***.toml` files.
